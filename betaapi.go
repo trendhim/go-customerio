@@ -8,43 +8,36 @@ import (
 	"net/http"
 )
 
-type APIClient struct {
+type BetaAPIClient struct {
 	Key       string
 	URL       string
 	UserAgent string
 	Client    *http.Client
 }
 
-// NewAPIClient prepares a client for use with the Customer.io API, see: https://customer.io/docs/api/#apicoreintroduction
+// NewBetaAPIClient prepares a client for use with the Customer.io API, see: https://customer.io/docs/api/#apicoreintroduction
 // using an App API Key from https://fly.customer.io/settings/api_credentials?keyType=app
-func NewAPIClient(key string, opts ...option) *APIClient {
-	client := &APIClient{
+func NewBetaAPIClient(key string, opts ...option) *BetaAPIClient {
+	client := &BetaAPIClient{
 		Key:       key,
 		Client:    http.DefaultClient,
-		URL:       "https://api.customer.io",
+		URL:       "https://beta-api.customer.io",
 		UserAgent: DefaultUserAgent,
 	}
 
 	for _, opt := range opts {
-		opt.api(client)
+		opt.betaapi(client)
 	}
 	return client
 }
 
-func (c *APIClient) doRequest(ctx context.Context, verb, requestPath string, body interface{}) ([]byte, int, error) {
+func (c *BetaAPIClient) doRequest(ctx context.Context, verb, requestPath string, body interface{}) ([]byte, int, error) {
 	b, err := json.Marshal(body)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	var req *http.Request
-
-	if body == nil {
-		req, err = http.NewRequest(verb, c.URL+requestPath, http.NoBody)
-	} else {
-		req, err = http.NewRequest(verb, c.URL+requestPath, bytes.NewBuffer(b))
-	}
-
+	req, err := http.NewRequest(verb, c.URL+requestPath, bytes.NewBuffer(b))
 	if err != nil {
 		return nil, 0, err
 	}
