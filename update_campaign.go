@@ -10,13 +10,13 @@ import (
 )
 
 type UpdateCapmaignActionRequest struct {
-	ParentActionID string            `json:"parent_action_id,omitempty"`
+	ParentActionID int64             `json:"parent_action_id,omitempty"`
 	Created        time.Time         `json:"created,omitempty"`
 	Updated        time.Time         `json:"updated,omitempty"`
 	Body           string            `json:"body,omitempty"`
 	SendingState   string            `json:"sending_state,omitempty"`
-	FromID         string            `json:"from_id,omitempty"`
-	ReplyToID      string            `json:"reply_to_id,omitempty"`
+	FromID         int64             `json:"from_id,omitempty"`
+	ReplyToID      int64             `json:"reply_to_id,omitempty"`
 	Recipient      string            `json:"recipient,omitempty"`
 	Subject        string            `json:"subject,omitempty"`
 	Headers        map[string]string `json:"headers,omitempty"`
