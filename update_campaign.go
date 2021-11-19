@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type UpdateCapmaignActionRequest struct {
+type UpdateCampaignActionRequest struct {
 	ParentActionID int64             `json:"parent_action_id,omitempty"`
 	Created        time.Time         `json:"created,omitempty"`
 	Updated        time.Time         `json:"updated,omitempty"`
@@ -22,7 +22,7 @@ type UpdateCapmaignActionRequest struct {
 	Headers        map[string]string `json:"headers,omitempty"`
 }
 
-type UpdateCapmaignActionResponse struct {
+type UpdateCampaignActionResponse struct {
 	ID             string    `json:"id"`
 	CampaignID     int64     `json:"campaign_id"`
 	ParentActionID int64     `json:"parent_action_id"`
@@ -46,7 +46,7 @@ type UpdateCapmaignActionResponse struct {
 	PreheaderText  string    `json:"preheader_text"`
 }
 
-func (t *UpdateCapmaignActionResponse) UnmarshalJSON(b []byte) error {
+func (t *UpdateCampaignActionResponse) UnmarshalJSON(b []byte) error {
 	var r struct {
 		Action struct {
 			ID             string `json:"id"`
@@ -117,7 +117,7 @@ func (e *DataError) Error() string {
 	return e.Errors[0].Detail
 }
 
-func (c *BetaAPIClient) UpdateCapmaignAction(ctx context.Context, campaignID string, actionID string, req *UpdateCapmaignActionRequest) (*UpdateCapmaignActionResponse, error) {
+func (c *BetaAPIClient) UpdateCampaignAction(ctx context.Context, campaignID string, actionID string, req *UpdateCampaignActionRequest) (*UpdateCampaignActionResponse, error) {
 	requestPath := fmt.Sprintf("/v1/api/campaigns/%s/actions/%s", url.PathEscape(campaignID), url.PathEscape(actionID))
 
 	body, statusCode, err := c.doRequest(ctx, "PUT", requestPath, req)
@@ -137,7 +137,7 @@ func (c *BetaAPIClient) UpdateCapmaignAction(ctx context.Context, campaignID str
 		return nil, tmpError
 	}
 
-	var result UpdateCapmaignActionResponse
+	var result UpdateCampaignActionResponse
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
