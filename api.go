@@ -37,7 +37,14 @@ func (c *APIClient) doRequest(ctx context.Context, verb, requestPath string, bod
 		return nil, 0, err
 	}
 
-	req, err := http.NewRequest(verb, c.URL+requestPath, bytes.NewBuffer(b))
+	var req *http.Request
+
+	if body == nil {
+		req, err = http.NewRequest(verb, c.URL+requestPath, http.NoBody)
+	} else {
+		req, err = http.NewRequest(verb, c.URL+requestPath, bytes.NewBuffer(b))
+	}
+
 	if err != nil {
 		return nil, 0, err
 	}
