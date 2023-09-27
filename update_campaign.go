@@ -117,8 +117,14 @@ func (e *DataError) Error() string {
 	return e.Errors[0].Detail
 }
 
-func (c *BetaAPIClient) UpdateCampaignAction(ctx context.Context, campaignID string, actionID string, req *UpdateCampaignActionRequest) (*UpdateCampaignActionResponse, error) {
-	requestPath := fmt.Sprintf("/v1/api/campaigns/%s/actions/%s", url.PathEscape(campaignID), url.PathEscape(actionID))
+func (c *BetaAPIClient) UpdateCampaignAction(ctx context.Context, campaignID string, actionID string, locale string, req *UpdateCampaignActionRequest) (*UpdateCampaignActionResponse, error) {
+	var requestPath string
+
+	if locale != "" {
+		requestPath = fmt.Sprintf("/v1/api/campaigns/%s/actions/%s/language/%s", url.PathEscape(campaignID), url.PathEscape(actionID), url.PathEscape(locale))
+	} else {
+		requestPath = fmt.Sprintf("/v1/api/campaigns/%s/actions/%s", url.PathEscape(campaignID), url.PathEscape(actionID))
+	}
 
 	body, statusCode, err := c.doRequest(ctx, "PUT", requestPath, req)
 	if err != nil {
