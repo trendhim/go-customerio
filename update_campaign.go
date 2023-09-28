@@ -117,7 +117,7 @@ func (e *DataError) Error() string {
 	return e.Errors[0].Detail
 }
 
-func (c *BetaAPIClient) UpdateCampaignAction(ctx context.Context, campaignID string, actionID string, locale string, req *UpdateCampaignActionRequest) (*UpdateCampaignActionResponse, error) {
+func (c *BetaAPIClient) UpdateCampaignLocalizedAction(ctx context.Context, campaignID string, actionID string, locale string, req *UpdateCampaignActionRequest) (*UpdateCampaignActionResponse, error) {
 	var requestPath string
 
 	if locale != "" {
@@ -125,6 +125,34 @@ func (c *BetaAPIClient) UpdateCampaignAction(ctx context.Context, campaignID str
 	} else {
 		requestPath = fmt.Sprintf("/v1/api/campaigns/%s/actions/%s", url.PathEscape(campaignID), url.PathEscape(actionID))
 	}
+
+	body, statusCode, err := c.doRequest(ctx, "PUT", requestPath, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if statusCode != http.StatusOK {
+		var tmpError = &DataError{}
+		if err := json.Unmarshal(body, &tmpError); err != nil {
+			error := Errors{
+				Status: statusCode,
+				Detail: string(body),
+			}
+			return nil, &DataError{[]Errors{error}}
+		}
+		return nil, tmpError
+	}
+
+	var result UpdateCampaignActionResponse
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func (c *BetaAPIClient) UpdateCampaignAction(ctx context.Context, campaignID string, actionID string, req *UpdateCampaignActionRequest) (*UpdateCampaignActionResponse, error) {
+	requestPath := fmt.Sprintf("/v1/api/campaigns/%s/actions/%s", url.PathEscape(campaignID), url.PathEscape(actionID))
 
 	body, statusCode, err := c.doRequest(ctx, "PUT", requestPath, req)
 	if err != nil {
