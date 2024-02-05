@@ -10,19 +10,22 @@ import (
 )
 
 type UpdateCampaignActionRequest struct {
-	ParentActionID int64             `json:"parent_action_id,omitempty"`
-	Created        time.Time         `json:"created,omitempty"`
-	Updated        time.Time         `json:"updated,omitempty"`
-	Body           string            `json:"body,omitempty"`
-	BodyAmp        string            `json:"body_amp,omitempty"`
-	Language       string            `json:"language,omitempty"`
-	SendingState   string            `json:"sending_state,omitempty"`
-	FromID         int64             `json:"from_id,omitempty"`
-	ReplyToID      int64             `json:"reply_to_id,omitempty"`
-	Recipient      string            `json:"recipient,omitempty"`
-	Subject        string            `json:"subject,omitempty"`
-	PreheaderText  string            `json:"preheader_text,omitempty"`
-	Headers        map[string]string `json:"headers,omitempty"`
+	ParentActionID int64     `json:"parent_action_id,omitempty"`
+	Created        time.Time `json:"created,omitempty"`
+	Updated        time.Time `json:"updated,omitempty"`
+	Body           string    `json:"body,omitempty"`
+	BodyAmp        string    `json:"body_amp,omitempty"`
+	Language       string    `json:"language,omitempty"`
+	SendingState   string    `json:"sending_state,omitempty"`
+	FromID         int64     `json:"from_id,omitempty"`
+	ReplyToID      int64     `json:"reply_to_id,omitempty"`
+	Recipient      string    `json:"recipient,omitempty"`
+	Subject        string    `json:"subject,omitempty"`
+	PreheaderText  string    `json:"preheader_text,omitempty"`
+	Headers        []struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	} `json:"headers,omitempty"`
 }
 
 type UpdateCampaignActionResponse struct {
