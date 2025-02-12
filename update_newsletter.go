@@ -54,10 +54,6 @@ type UpdateNewsletterVariantResponse struct {
 	Bcc           string `json:"bcc"`
 	FakeBcc       bool   `json:"fake_bcc"`
 	PreheaderText string `json:"preheader_text"`
-	Headers       []struct {
-		Name  string `json:"name"`
-		Value string `json:"value"`
-	} `json:"headers"`
 }
 
 func (t *UpdateNewsletterVariantResponse) UnmarshalJSON(b []byte) error {
@@ -89,7 +85,6 @@ func (t *UpdateNewsletterVariantResponse) UnmarshalJSON(b []byte) error {
 	t.Bcc = r.Content.Bcc
 	t.FakeBcc = r.Content.FakeBcc
 	t.PreheaderText = r.Content.PreheaderText
-	t.Headers = r.Content.Headers
 
 	return nil
 }
