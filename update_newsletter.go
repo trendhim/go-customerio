@@ -94,6 +94,34 @@ func (t *UpdateNewsletterVariantResponse) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (c *APIClient) UpdateNewsletterVariant(ctx context.Context, newsletterID string, contentID string, req *UpdateNewsletterVariantRequest) (*UpdateNewsletterVariantResponse, error) {
+	requestPath := fmt.Sprintf("/v1/newsletters/%s/contents/%s", url.PathEscape(newsletterID), url.PathEscape(contentID))
+
+	body, statusCode, err := c.doRequest(ctx, "PUT", requestPath, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if statusCode != http.StatusOK {
+		var tmpError = &DataError{}
+		if err := json.Unmarshal(body, &tmpError); err != nil {
+			error := Errors{
+				Status: statusCode,
+				Detail: string(body),
+			}
+			return nil, &DataError{[]Errors{error}}
+		}
+		return nil, tmpError
+	}
+
+	var result UpdateNewsletterVariantResponse
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func (c *APIClient) UpdateNewsletterVariantTranslation(ctx context.Context, newsletterID string, language string, req *UpdateNewsletterVariantRequest) (*UpdateNewsletterVariantResponse, error) {
 	requestPath := fmt.Sprintf("/v1/newsletters/%s/language/%s", url.PathEscape(newsletterID), url.PathEscape(language))
 
