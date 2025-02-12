@@ -141,11 +141,6 @@ func (c *CustomerIO) DeleteCtx(ctx context.Context, customerID string) error {
 		nil)
 }
 
-// DeleteDevice deletes a device for a customer
-func (c *CustomerIO) DeleteDevice(customerID string, deviceID string) error {
-	return c.DeleteDeviceCtx(context.Background(), customerID, deviceID)
-}
-
 func (c *CustomerIO) auth() string {
 	return base64.URLEncoding.EncodeToString([]byte(fmt.Sprintf("%v:%v", c.siteID, c.apiKey)))
 }
