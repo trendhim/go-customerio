@@ -20,18 +20,20 @@ type ListNewsletterTestGroupsResponse struct {
 	TestGroups []TestGroup `json:"test_groups"`
 }
 
+type Header struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
 type UpdateNewsletterVariantRequest struct {
-	Body          string `json:"body,omitempty"`
-	BodyAmp       string `json:"body_amp,omitempty"`
-	FromID        int64  `json:"from_id,omitempty"`
-	ReplyToID     int64  `json:"reply_to_id,omitempty"`
-	Recipient     string `json:"recipient,omitempty"`
-	Subject       string `json:"subject,omitempty"`
-	PreheaderText string `json:"preheader_text,omitempty"`
-	Headers       []struct {
-		Name  string `json:"name"`
-		Value string `json:"value"`
-	} `json:"headers,omitempty"`
+	Body          string   `json:"body,omitempty"`
+	BodyAmp       string   `json:"body_amp,omitempty"`
+	FromID        int64    `json:"from_id,omitempty"`
+	ReplyToID     int64    `json:"reply_to_id,omitempty"`
+	Recipient     string   `json:"recipient,omitempty"`
+	Subject       string   `json:"subject,omitempty"`
+	PreheaderText string   `json:"preheader_text,omitempty"`
+	Headers       []Header `json:"headers,omitempty"`
 }
 
 type UpdateNewsletterVariantResponse struct {

@@ -22,10 +22,7 @@ type UpdateCampaignActionRequest struct {
 	Recipient      string    `json:"recipient,omitempty"`
 	Subject        string    `json:"subject,omitempty"`
 	PreheaderText  string    `json:"preheader_text,omitempty"`
-	Headers        []struct {
-		Name  string `json:"name"`
-		Value string `json:"value"`
-	} `json:"headers,omitempty"`
+	Headers        []Header  `json:"headers,omitempty"`
 }
 
 type UpdateCampaignActionResponse struct {
