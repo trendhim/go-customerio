@@ -9,11 +9,11 @@ import (
 )
 
 type TestGroup struct {
-	Id         int      `json:"id"`
-	Name       string   `json:"name"`
-	Label      string   `json:"label"`
-	Winner     bool     `json:"winner"`
-	ContentIds []string `json:"content_ids"`
+	Id         int           `json:"id"`
+	Name       string        `json:"name"`
+	Label      string        `json:"label"`
+	Winner     bool          `json:"winner"`
+	ContentIds []json.Number `json:"content_ids"`
 }
 
 type ListNewsletterTestGroupsResponse struct {
