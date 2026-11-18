@@ -44,32 +44,7 @@ func (c *APIClient) CreateCollectionAction(ctx context.Context, req *UpdateColle
 	}
 
 	if statusCode != http.StatusOK {
-		var meta struct {
-			Errors []struct {
-				Detail string `json:"detail"`
-				Source struct {
-					Pointer string `json:"pointer"`
-				} `json:"source"`
-				Status string `json:"status"`
-			} `json:"errors"`
-		}
-
-		if err := json.Unmarshal(body, &meta); err != nil {
-			return nil, &CollectionError{
-				StatusCode: statusCode,
-				Err:        string(body),
-			}
-		}
-
-		var firstErrorMessage string
-		if len(meta.Errors) > 0 {
-			firstErrorMessage = meta.Errors[0].Detail
-		}
-
-		return nil, &CollectionError{
-			StatusCode: statusCode,
-			Err:        firstErrorMessage,
-		}
+		return nil, newCollectionError(statusCode, body)
 	}
 
 	var result UpdateCollectionActionResponse
@@ -87,32 +62,7 @@ func (c *APIClient) ListCollectionsAction(ctx context.Context) (*ListCollections
 	}
 
 	if statusCode != http.StatusOK {
-		var meta struct {
-			Errors []struct {
-				Detail string `json:"detail"`
-				Source struct {
-					Pointer string `json:"pointer"`
-				} `json:"source"`
-				Status string `json:"status"`
-			} `json:"errors"`
-		}
-
-		if err := json.Unmarshal(body, &meta); err != nil {
-			return nil, &CollectionError{
-				StatusCode: statusCode,
-				Err:        string(body),
-			}
-		}
-
-		var firstErrorMessage string
-		if len(meta.Errors) > 0 {
-			firstErrorMessage = meta.Errors[0].Detail
-		}
-
-		return nil, &CollectionError{
-			StatusCode: statusCode,
-			Err:        firstErrorMessage,
-		}
+		return nil, newCollectionError(statusCode, body)
 	}
 
 	var result ListCollectionsActionResponse
@@ -132,32 +82,7 @@ func (c *APIClient) UpdateCollectionAction(ctx context.Context, collectionID str
 	}
 
 	if statusCode != http.StatusOK {
-		var meta struct {
-			Errors []struct {
-				Detail string `json:"detail"`
-				Source struct {
-					Pointer string `json:"pointer"`
-				} `json:"source"`
-				Status string `json:"status"`
-			} `json:"errors"`
-		}
-
-		if err := json.Unmarshal(body, &meta); err != nil {
-			return nil, &CollectionError{
-				StatusCode: statusCode,
-				Err:        string(body),
-			}
-		}
-
-		var firstErrorMessage string
-		if len(meta.Errors) > 0 {
-			firstErrorMessage = meta.Errors[0].Detail
-		}
-
-		return nil, &CollectionError{
-			StatusCode: statusCode,
-			Err:        firstErrorMessage,
-		}
+		return nil, newCollectionError(statusCode, body)
 	}
 
 	var result UpdateCollectionActionResponse
@@ -173,6 +98,26 @@ type CollectionError struct {
 	Err string
 	// StatusCode is the http status code for the error.
 	StatusCode int
+}
+
+// newCollectionError reads a failed response: the first error's detail when the body has one, otherwise the body as
+// it came. An answer in another shape (a gateway's, or {"meta":{"error":...}}) used to leave the error without text.
+func newCollectionError(statusCode int, body []byte) *CollectionError {
+	var meta struct {
+		Errors []struct {
+			Detail string `json:"detail"`
+		} `json:"errors"`
+	}
+
+	message := string(body)
+	if err := json.Unmarshal(body, &meta); err == nil && len(meta.Errors) > 0 && meta.Errors[0].Detail != "" {
+		message = meta.Errors[0].Detail
+	}
+
+	return &CollectionError{
+		StatusCode: statusCode,
+		Err:        message,
+	}
 }
 
 func (e *CollectionError) Error() string {
